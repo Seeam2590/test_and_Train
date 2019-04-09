@@ -18,8 +18,8 @@ output: html_document
   #We have to create a model that predicts y
   #We can fit any degree polynomial to our model 
   #We must choose the degree which has the least Mean Square Errors after prediction (MSE)
-  
   #The following function takes a training data and then produces MSEs for prediction on testing data for upto 10 degree polynomial models
+
   mse_calc = function(train,test){
     mse = numeric()
     for (i in 1:10) {
@@ -31,6 +31,7 @@ output: html_document
   #We divide the data-set into train and test data set randomly 10 times
   #Plotting the graph of the MSE vs degree of polynomials one over another for 10 combination of train and test sets
   #We look at the graph anc choose the degree which consistently gives lowest MSE for all 10 train-test data-set combinations
+
   x = 1:10
   plot = ggplot()
   for (i in 1:10) {
@@ -52,6 +53,7 @@ output: html_document
 ```{r exploration, error = FALSE, warning = FALSE, message = FALSE, echo = FALSE}
   #Now it's time to plot our model on the test set
   #At first we take a look at the test and training sets
+
   indices = sample(1000,500)
   train = data[indices,]
   test = data[-indices,]
@@ -65,12 +67,14 @@ output: html_document
   model = lm(y~x+I(x^2), data = train)
   summary(model)
   
-  #Creating a data frame with range of x and prediction at each point 
+  #Creating a data frame with range of x and prediction at each point
+  
   x = c(1:9)
   y = predict(model,data.frame(x))
   testline = data.frame(x,y)
   
   #Plotting the dataframe as a line over the train and test models
+  
   ggplot() + 
     geom_point(data = train, aes(x = x,y = y)) +
     ggtitle("Line of best fit on Training Set") +
@@ -86,28 +90,33 @@ output: html_document
 ```{r residuals, error = FALSE, warning = FALSE, message = FALSE, echo = FALSE}
   
   #Calculating MSE and residual sum of sqaures of line on test points
+
   model_1_sumOfSquares = sum((test$y - predict(model,test))^2)
   model_1_MSE = mean((test$y - predict(model,test))^2)
+  
   #Our analysis is complete
-  
-  
   #Let's try to plot the residual lines on our test set just for fun. This is how you can do it
-  
   #Creating a best fit polynomial function
+  
   reg = function(x){
     return(4.8269 - 0.8163*x + 3.0392*(x^2))
   }
   
   #Getting residuals and save it in a new data-frame
+  
   x = data$x
   y = reg(x)
   means = data.frame(x,y)
   data$group = 1:1000
   means$group = 1:1000
-  groups = rbind(data, means)   #This makes new data frame with 'data' piled over 'means'
+  #This makes new data frame with 'data' piled over 'means'
+  
+  groups = rbind(data, means)
+  
   
   
   #Plotting the residual lines on our graph
+  
   ggplot() +
     geom_point(data = data, aes(x = x,y = y)) + 
     stat_function(data = data.frame(x = c(0,10)),aes(x),fun = reg) +
